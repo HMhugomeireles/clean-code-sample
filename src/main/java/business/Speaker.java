@@ -92,13 +92,8 @@ public class Speaker {
     public int register(IRepository repository) throws NoSessionsApprovedException, SpeakerDoesntMeetRequirementsException, ArgumentNullException {
         //lets init some vars
         Integer speakerId = null;
-        boolean good = false;
-        boolean appr = false;
 
         //List<String> nt = Arrays.asList("MVC4", "Node.js", "CouchDB", "KendoUI", "Dapper", "Angular");
-
-        List<String> ot = Arrays.asList("Cobol", "Punch Cards", "Commodore", "VBScript");
-        List<String> domains = Arrays.asList("aol.com", "hotmail.com", "prodigy.com", "CompuServe.com");
 
         if (!Strings.isNullOrEmpty(firstName)) {
             if (!Strings.isNullOrEmpty(lastName)) {
@@ -106,12 +101,13 @@ public class Speaker {
                     //put list of employers in array
                     List<String> emps = Arrays.asList("Microsoft", "Google", "Fog Creek Software", "37Signals");
 
-                    good = ((exp > 10 || hasBlog || certifications.size() > 3 || emps.contains(employer)));
+                    boolean good = ((exp > 10 || hasBlog || certifications.size() > 3 || emps.contains(employer)));
 
                     if (!good) {
                         //need to get just the domain from the email
                         String emailDomain = email.split("@")[1];
 
+                        List<String> domains = Arrays.asList("aol.com", "hotmail.com", "prodigy.com", "CompuServe.com");
                         if (!domains.contains(emailDomain) && (!(browser.name == WebBrowser.BrowserName.InternetExplorer
                             && browser.majorVersion < 9))) {
                             good = true;
@@ -119,7 +115,9 @@ public class Speaker {
                     }
 
                     if (good) {
+                        boolean appr = false;
                         if (sessions.size() != 0) {
+                            List<String> ot = Arrays.asList("Cobol", "Punch Cards", "Commodore", "VBScript");
                             for (Session session : sessions) {
 
                                 for (String tech : ot) {
