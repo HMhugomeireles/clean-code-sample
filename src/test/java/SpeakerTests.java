@@ -17,7 +17,7 @@ public class SpeakerTests {
 
     @Test
     public void Register_EmptyFirstName_ThrowsArgumentNullException() {
-        Speaker speaker = GetSpeakerThatWouldBeApproved();
+        Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setFirstName("");
 
         ArgumentNullException exception =
@@ -29,7 +29,7 @@ public class SpeakerTests {
     @Test
 
     public void Register_EmptyLastName_ThrowsArgumentNullException() {
-        Speaker speaker = GetSpeakerThatWouldBeApproved();
+        Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setLastName("");
 
         ArgumentNullException exception =
@@ -41,7 +41,7 @@ public class SpeakerTests {
     @Test
     public void Register_EmptyEmail_ThrowsArgumentNullException() {
 
-        Speaker speaker = GetSpeakerThatWouldBeApproved();
+        Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setEmail("");
 
         ArgumentNullException exception =
@@ -55,7 +55,7 @@ public class SpeakerTests {
     public void Register_WorksForPrestigiousEmployerButHasRedFlags_ReturnsSpeakerId()
         throws SpeakerDoesntMeetRequirementsException, ArgumentNullException, NoSessionsApprovedException {
         //arrange
-        Speaker speaker = GetSpeakerWithRedFlags();
+        Speaker speaker = getSpeakerWithRedFlags();
         speaker.setEmployer("Microsoft");
 
         //act
@@ -70,7 +70,7 @@ public class SpeakerTests {
     public void Register_HasBlogButHasRedFlags_ReturnsSpeakerId()
         throws SpeakerDoesntMeetRequirementsException, ArgumentNullException, NoSessionsApprovedException {
         //arrange
-        Speaker speaker = GetSpeakerWithRedFlags();
+        Speaker speaker = getSpeakerWithRedFlags();
 
         Integer speakerId = speaker.register(new SqlServerCompactRepository());
 
@@ -83,7 +83,7 @@ public class SpeakerTests {
     public void Register_HasCertificationsButHasRedFlags_ReturnsSpeakerId()
         throws SpeakerDoesntMeetRequirementsException, ArgumentNullException, NoSessionsApprovedException {
         //arrange
-        Speaker speaker = GetSpeakerWithRedFlags();
+        Speaker speaker = getSpeakerWithRedFlags();
         speaker.setCertifications(Arrays.asList("cert1", "cert2", "cert3", "cert4"));
 
         Integer speakerId = speaker.register(new SqlServerCompactRepository());
@@ -96,7 +96,7 @@ public class SpeakerTests {
 
     public void Register_SingleSessionThatIsOnOldTech_ThrowsNoSessionsApprovedException() {
         //arrange
-        Speaker speaker = GetSpeakerThatWouldBeApproved();
+        Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setSessions(Collections.singletonList(new Session("Cobol for dummies", "Intro to Cobol")));
 
         Assertions.assertThrows(NoSessionsApprovedException.class, () -> speaker.register(repository));
@@ -106,7 +106,7 @@ public class SpeakerTests {
 
     public void Register_NoSessionsPassed_ThrowsArgumentException() {
         //arrange
-        Speaker speaker = GetSpeakerThatWouldBeApproved();
+        Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setSessions(Collections.emptyList());
 
         ArgumentNullException exception =
@@ -119,7 +119,7 @@ public class SpeakerTests {
 
     public void Register_DoesntAppearExceptionalAndUsingOldBrowser_ThrowsNoSessionsApprovedException() {
         //arrange
-        Speaker speaker = GetSpeakerThatWouldBeApproved();
+        Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setHasBlog(false);
         speaker.setBrowser(new WebBrowser("IE", 6));
 
@@ -130,7 +130,7 @@ public class SpeakerTests {
 
     public void Register_DoesntAppearExceptionalAndHasAncientEmail_ThrowsNoSessionsApprovedException() {
         //arrange
-        Speaker speaker = GetSpeakerThatWouldBeApproved();
+        Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setHasBlog(false);
         speaker.setEmail("name@aol.com");
 
@@ -139,7 +139,7 @@ public class SpeakerTests {
 
     //region Helpers
 
-    private Speaker GetSpeakerThatWouldBeApproved() {
+    private Speaker getSpeakerThatWouldBeApproved() {
 
         Speaker speaker = new Speaker();
 
@@ -157,8 +157,8 @@ public class SpeakerTests {
         return speaker;
     }
 
-    private Speaker GetSpeakerWithRedFlags() {
-        Speaker speaker = GetSpeakerThatWouldBeApproved();
+    private Speaker getSpeakerWithRedFlags() {
+        Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setEmail("tom@aol.com");
         speaker.setBrowser(new WebBrowser("IE", 6));
         return speaker;

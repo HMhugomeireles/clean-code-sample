@@ -90,22 +90,29 @@ public class Speaker {
     /// </summary>
     /// <returns>speakerID</returns>
     public int register(IRepository repository) throws NoSessionsApprovedException, SpeakerDoesntMeetRequirementsException, ArgumentNullException {
-        this.validateData();
+        this.validateRegistration();
+
+        //if we got this far, the speaker has been accepted and is registered.
+        return repository.saveSpeaker(this);
+    }
+
+    private void validateRegistration() throws ArgumentNullException, SpeakerDoesntMeetRequirementsException, NoSessionsApprovedException {
+        this.validatePersonalData();
+
+        if (sessions.isEmpty()) {
+            throw new ArgumentNullException("Can't register speaker with no sessions to present");
+        }
 
         boolean appearsExceptional = this.appearsExceptional();
         boolean hasRedFlags = this.hasRedFlags();
 
-        if (!appearsExceptional || hasRedFlags) {
-            throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our arbitrary and capricious standards");
-        }
+        boolean isQualified = appearsExceptional || !hasRedFlags;
 
-        if (sessions.size() == 0) {
-            throw new ArgumentNullException("Can't register speaker with no sessions to present");
+        if (!isQualified) {
+            throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our standards");
         }
 
         this.sessionsApproved();
-
-        return repository.saveSpeaker(this);
     }
 
     private void sessionsApproved() throws NoSessionsApprovedException {
@@ -157,7 +164,7 @@ public class Speaker {
         return preferredEmployers.contains(employer);
     }
 
-    private void validateData() throws ArgumentNullException {
+    private void validatePersonalData() throws ArgumentNullException {
         if (Strings.isNullOrEmpty(firstName)) {
             throw new ArgumentNullException("First Name is required");
         }
