@@ -90,9 +90,6 @@ public class Speaker {
     /// </summary>
     /// <returns>speakerID</returns>
     public int register(IRepository repository) throws NoSessionsApprovedException, SpeakerDoesntMeetRequirementsException, ArgumentNullException {
-        //lets init some vars
-        Integer speakerId = null;
-
         this.validateData();
 
         boolean appearsExceptional = this.appearsExceptional();
@@ -108,31 +105,7 @@ public class Speaker {
 
         this.sessionsApproved();
 
-        //if we got this far, the speaker is approved
-        //let's go ahead and register him/her now.
-        //First, let's calculate the registration fee.
-        //More experienced speakers pay a lower fee.
-        if (experienceYears <= 1) {
-            registrationFee = 500;
-        } else if (experienceYears >= 2 && experienceYears <= 3) {
-            registrationFee = 250;
-        } else if (experienceYears >= 4 && experienceYears <= 5) {
-            registrationFee = 100;
-        } else if (experienceYears >= 6 && experienceYears <= 9) {
-            registrationFee = 50;
-        } else {
-            registrationFee = 0;
-        }
-
-        //Now, save the speaker and sessions to the db.
-        try {
-            speakerId = repository.saveSpeaker(this);
-        } catch (Exception e) {
-            //in case the db call fails
-        }
-
-        //if we got this far, the speaker is registered.
-        return speakerId;
+        return repository.saveSpeaker(this);
     }
 
     private void sessionsApproved() throws NoSessionsApprovedException {
