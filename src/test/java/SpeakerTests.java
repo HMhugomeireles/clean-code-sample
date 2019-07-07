@@ -146,7 +146,6 @@ class SpeakerTests {
 
         speaker.setExperienceYears(1);
         speaker.setCertifications(new ArrayList<>());
-        speaker.setBlogURL("");
         speaker.setSessions(Collections.singletonList(new Session("test title", "test description")));
         return speaker;
     }
