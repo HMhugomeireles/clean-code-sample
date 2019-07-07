@@ -98,9 +98,6 @@ public class Speaker {
         //List<String> nt = Arrays.asList("MVC4", "Node.js", "CouchDB", "KendoUI", "Dapper", "Angular");
 
         List<String> ot = Arrays.asList("Cobol", "Punch Cards", "Commodore", "VBScript");
-
-        //DEFECT #5274 DA 12/10/2012
-        //We weren't filtering out the prodigy domain so I added it.
         List<String> domains = Arrays.asList("aol.com", "hotmail.com", "prodigy.com", "CompuServe.com");
 
         if (!Strings.isNullOrEmpty(firstName)) {
@@ -109,8 +106,6 @@ public class Speaker {
                     //put list of employers in array
                     List<String> emps = Arrays.asList("Microsoft", "Google", "Fog Creek Software", "37Signals");
 
-                    //DFCT #838 Jimmy
-                    //We're now requiring 3 certifications so I changed the hard coded number. Boy, programming is hard.
                     good = ((exp > 10 || hasBlog || certifications.size() > 3 || emps.contains(employer)));
 
                     if (!good) {
@@ -124,17 +119,8 @@ public class Speaker {
                     }
 
                     if (good) {
-                        //DEFECT #5013 CO 1/12/2012
-                        //We weren't requiring at least one session
                         if (sessions.size() != 0) {
                             for (Session session : sessions) {
-
-                                //for (String tech : ot) {
-                                //    if (session.title.contains(tech)) {
-                                //        session.approved = true;
-                                //    }
-                                //    break;
-                                //}
 
                                 for (String tech : ot) {
 
