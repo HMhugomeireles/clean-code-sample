@@ -1,32 +1,33 @@
 package business;
 
 public class WebBrowser {
-    public BrowserName name;
+    public final BrowserName name;
 
-    public int majorVersion;
+    public final int majorVersion;
 
     public WebBrowser(String name, int majorVersion) {
-        this.name = TranslateStringToBrowserName(name);
+        this.name = translateStringToBrowserName(name);
         this.majorVersion = majorVersion;
     }
 
-    private BrowserName TranslateStringToBrowserName(String name) {
+    private BrowserName translateStringToBrowserName(String name) {
         if (name.contains("IE")) {
-            return BrowserName.InternetExplorer;
+            return BrowserName.INTERNET_EXPLORER;
         }
         //TODO: Add more logic for properly sniffing for other browsers.
-        return BrowserName.Unknown;
+        return BrowserName.UNKNOWN;
     }
 
     public enum BrowserName {
-        Unknown,
-        InternetExplorer,
-        Firefox,
-        Chrome,
-        Opera,
-        Safari,
-        Dolphin,
-        Konqueror,
-        Linx
+        CHROME,
+        DOLPHIN,
+        FIREFOX,
+        INTERNET_EXPLORER,
+        KONQUEROR,
+        LINX,
+        OPERA,
+        SAFARI,
+        UNKNOWN
+
     }
 }

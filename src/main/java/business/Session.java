@@ -35,9 +35,8 @@ public class Session {
         return approved;
     }
 
-    public Session setApproved(boolean approved) {
+    public void setApproved(boolean approved) {
         this.approved = approved;
-        return this;
     }
 }
 

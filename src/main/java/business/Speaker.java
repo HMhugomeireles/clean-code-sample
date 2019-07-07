@@ -19,68 +19,50 @@ public class Speaker {
 
     private boolean hasBlog;
 
-    private String blogURL;
-
     private WebBrowser browser;
 
     private List<String> certifications;
 
     private String employer;
 
-    private int registrationFee;
-
     private List<business.Session> sessions;
 
     //region getters and setters
 
-    public Speaker setFirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
-        return this;
     }
 
-    public Speaker setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
-        return this;
     }
 
-    public Speaker setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
-        return this;
     }
 
-    public Speaker setExperienceYears(int experienceYears) {
+    public void setExperienceYears(int experienceYears) {
         this.experienceYears = experienceYears;
-        return this;
     }
 
-    public Speaker setHasBlog(boolean hasBlog) {
+    public void setHasBlog(boolean hasBlog) {
         this.hasBlog = hasBlog;
-        return this;
     }
 
-    public Speaker setBlogURL(String blogURL) {
-        this.blogURL = blogURL;
-        return this;
-    }
-
-    public Speaker setBrowser(WebBrowser browser) {
+    public void setBrowser(WebBrowser browser) {
         this.browser = browser;
-        return this;
     }
 
-    public Speaker setCertifications(List<String> certifications) {
+    public void setCertifications(List<String> certifications) {
         this.certifications = certifications;
-        return this;
     }
 
-    public Speaker setEmployer(String employer) {
+    public void setEmployer(String employer) {
         this.employer = employer;
-        return this;
     }
 
-    public Speaker setSessions(List<Session> sessions) {
+    public void setSessions(List<Session> sessions) {
         this.sessions = sessions;
-        return this;
     }
 
     //end region
@@ -141,7 +123,7 @@ public class Speaker {
         List<String> ancientDomains = Arrays.asList("aol.com", "hotmail.com", "prodigy.com", "CompuServe.com");
         boolean isEmailDomainAncient = ancientDomains.contains(emailDomain);
 
-        boolean isBrowserOlderThanIe9 = browser.name == WebBrowser.BrowserName.InternetExplorer && browser.majorVersion < 9;
+        boolean isBrowserOlderThanIe9 = browser.name == WebBrowser.BrowserName.INTERNET_EXPLORER && browser.majorVersion < 9;
 
         return isEmailDomainAncient || isBrowserOlderThanIe9;
     }
@@ -178,21 +160,21 @@ public class Speaker {
 
     //region Custom Exceptions
     public class SpeakerDoesntMeetRequirementsException extends Exception {
-        public SpeakerDoesntMeetRequirementsException(String message) {
+        SpeakerDoesntMeetRequirementsException(String message) {
             super(message);
         }
     }
 
 
     public class NoSessionsApprovedException extends Exception {
-        public NoSessionsApprovedException(String message) {
+        NoSessionsApprovedException(String message) {
             super(message);
         }
     }
 
 
     public class ArgumentNullException extends Exception {
-        public ArgumentNullException(String message) {
+        ArgumentNullException(String message) {
             super(message);
         }
     }

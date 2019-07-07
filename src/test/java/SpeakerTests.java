@@ -1,8 +1,10 @@
 import business.Session;
 import business.Speaker;
-import business.Speaker.*;
+import business.Speaker.ArgumentNullException;
+import business.Speaker.NoSessionsApprovedException;
+import business.Speaker.SpeakerDoesntMeetRequirementsException;
 import business.WebBrowser;
-import dataAccessLayer.SqlServerCompactRepository;
+import dataaccesslayer.SqlServerCompactRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,13 +12,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class SpeakerTests {
+class SpeakerTests {
 
     //Hard coding to single concrete implementation for simplicity here.
-    private SqlServerCompactRepository repository = new SqlServerCompactRepository();
+    private final SqlServerCompactRepository repository = new SqlServerCompactRepository();
 
     @Test
-    public void Register_EmptyFirstName_ThrowsArgumentNullException() {
+    void Register_EmptyFirstName_ThrowsArgumentNullException() {
         Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setFirstName("");
 
@@ -27,8 +29,7 @@ public class SpeakerTests {
     }
 
     @Test
-
-    public void Register_EmptyLastName_ThrowsArgumentNullException() {
+    void Register_EmptyLastName_ThrowsArgumentNullException() {
         Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setLastName("");
 
@@ -39,7 +40,7 @@ public class SpeakerTests {
     }
 
     @Test
-    public void Register_EmptyEmail_ThrowsArgumentNullException() {
+    void Register_EmptyEmail_ThrowsArgumentNullException() {
 
         Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setEmail("");
@@ -51,8 +52,7 @@ public class SpeakerTests {
     }
 
     @Test
-
-    public void Register_WorksForPrestigiousEmployerButHasRedFlags_ReturnsSpeakerId()
+    void Register_WorksForPrestigiousEmployerButHasRedFlags_ReturnsSpeakerId()
         throws SpeakerDoesntMeetRequirementsException, ArgumentNullException, NoSessionsApprovedException {
         //arrange
         Speaker speaker = getSpeakerWithRedFlags();
@@ -66,8 +66,7 @@ public class SpeakerTests {
     }
 
     @Test
-
-    public void Register_HasBlogButHasRedFlags_ReturnsSpeakerId()
+    void Register_HasBlogButHasRedFlags_ReturnsSpeakerId()
         throws SpeakerDoesntMeetRequirementsException, ArgumentNullException, NoSessionsApprovedException {
         //arrange
         Speaker speaker = getSpeakerWithRedFlags();
@@ -79,8 +78,7 @@ public class SpeakerTests {
     }
 
     @Test
-
-    public void Register_HasCertificationsButHasRedFlags_ReturnsSpeakerId()
+    void Register_HasCertificationsButHasRedFlags_ReturnsSpeakerId()
         throws SpeakerDoesntMeetRequirementsException, ArgumentNullException, NoSessionsApprovedException {
         //arrange
         Speaker speaker = getSpeakerWithRedFlags();
@@ -93,8 +91,7 @@ public class SpeakerTests {
     }
 
     @Test
-
-    public void Register_SingleSessionThatIsOnOldTech_ThrowsNoSessionsApprovedException() {
+    void Register_SingleSessionThatIsOnOldTech_ThrowsNoSessionsApprovedException() {
         //arrange
         Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setSessions(Collections.singletonList(new Session("Cobol for dummies", "Intro to Cobol")));
@@ -103,8 +100,7 @@ public class SpeakerTests {
     }
 
     @Test
-
-    public void Register_NoSessionsPassed_ThrowsArgumentException() {
+    void Register_NoSessionsPassed_ThrowsArgumentException() {
         //arrange
         Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setSessions(Collections.emptyList());
@@ -116,8 +112,7 @@ public class SpeakerTests {
     }
 
     @Test
-
-    public void Register_DoesntAppearExceptionalAndUsingOldBrowser_ThrowsNoSessionsApprovedException() {
+    void Register_DoesntAppearExceptionalAndUsingOldBrowser_ThrowsNoSessionsApprovedException() {
         //arrange
         Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setHasBlog(false);
@@ -127,8 +122,7 @@ public class SpeakerTests {
     }
 
     @Test
-
-    public void Register_DoesntAppearExceptionalAndHasAncientEmail_ThrowsNoSessionsApprovedException() {
+    void Register_DoesntAppearExceptionalAndHasAncientEmail_ThrowsNoSessionsApprovedException() {
         //arrange
         Speaker speaker = getSpeakerThatWouldBeApproved();
         speaker.setHasBlog(false);
