@@ -93,91 +93,89 @@ public class Speaker {
         //lets init some vars
         Integer speakerId = null;
 
-        //List<String> nt = Arrays.asList("MVC4", "Node.js", "CouchDB", "KendoUI", "Dapper", "Angular");
+        validateData();
 
-        if (!Strings.isNullOrEmpty(firstName)) {
-            if (!Strings.isNullOrEmpty(lastName)) {
-                if (!Strings.isNullOrEmpty(email)) {
-                    //put list of employers in array
-                    List<String> emps = Arrays.asList("Microsoft", "Google", "Fog Creek Software", "37Signals");
+        List<String> preferredEmployers = Arrays.asList("Microsoft", "Google", "Fog Creek Software", "37Signals");
 
-                    boolean good = ((exp > 10 || hasBlog || certifications.size() > 3 || emps.contains(employer)));
+        boolean speakerAppearsExceptional = ((exp > 10 || hasBlog || certifications.size() > 3 || preferredEmployers.contains(employer)));
 
-                    if (!good) {
-                        //need to get just the domain from the email
-                        String emailDomain = email.split("@")[1];
+        if (!speakerAppearsExceptional) {
+            //need to get just the domain from the email
+            String emailDomain = email.split("@")[1];
 
-                        List<String> domains = Arrays.asList("aol.com", "hotmail.com", "prodigy.com", "CompuServe.com");
-                        if (!domains.contains(emailDomain) && (!(browser.name == WebBrowser.BrowserName.InternetExplorer
-                            && browser.majorVersion < 9))) {
-                            good = true;
+            List<String> domains = Arrays.asList("aol.com", "hotmail.com", "prodigy.com", "CompuServe.com");
+            if (!domains.contains(emailDomain) && (!(browser.name == WebBrowser.BrowserName.InternetExplorer
+                && browser.majorVersion < 9))) {
+                speakerAppearsExceptional = true;
+            }
+        }
+
+        if (speakerAppearsExceptional) {
+            boolean appr = false;
+            if (sessions.size() != 0) {
+                List<String> ot = Arrays.asList("Cobol", "Punch Cards", "Commodore", "VBScript");
+                for (Session session : sessions) {
+
+                    for (String tech : ot) {
+
+                        if (session.title.contains(tech) || session.description.contains(tech)) {
+                            session.approved = false;
+                            break;
+                        } else {
+                            session.approved = true;
+                            appr = true;
                         }
                     }
-
-                    if (good) {
-                        boolean appr = false;
-                        if (sessions.size() != 0) {
-                            List<String> ot = Arrays.asList("Cobol", "Punch Cards", "Commodore", "VBScript");
-                            for (Session session : sessions) {
-
-                                for (String tech : ot) {
-
-                                    if (session.title.contains(tech) || session.description.contains(tech)) {
-                                        session.approved = false;
-                                        break;
-                                    } else {
-                                        session.approved = true;
-                                        appr = true;
-                                    }
-                                }
-                            }
-                        } else {
-                            throw new ArgumentNullException("Can't register speaker with no sessions to present");
-                        }
-
-                        if (appr) {
-
-                            //if we got this far, the speaker is approved
-                            //let's go ahead and register him/her now.
-                            //First, let's calculate the registration fee.
-                            //More experienced speakers pay a lower fee.
-                            if (exp <= 1) {
-                                registrationFee = 500;
-                            } else if (exp >= 2 && exp <= 3) {
-                                registrationFee = 250;
-                            } else if (exp >= 4 && exp <= 5) {
-                                registrationFee = 100;
-                            } else if (exp >= 6 && exp <= 9) {
-                                registrationFee = 50;
-                            } else {
-                                registrationFee = 0;
-                            }
-
-                            //Now, save the speaker and sessions to the db.
-                            try {
-                                speakerId = repository.saveSpeaker(this);
-                            } catch (Exception e) {
-                                //in case the db call fails
-                            }
-                        } else {
-                            throw new NoSessionsApprovedException("No sessions approved");
-                        }
-                    } else {
-                        throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our arbitrary and capricious standards");
-                    }
-
-                } else {
-                    throw new ArgumentNullException("Email is required");
                 }
             } else {
-                throw new ArgumentNullException("Last name is required");
+                throw new ArgumentNullException("Can't register speaker with no sessions to present");
+            }
+
+            if (appr) {
+
+                //if we got this far, the speaker is approved
+                //let's go ahead and register him/her now.
+                //First, let's calculate the registration fee.
+                //More experienced speakers pay a lower fee.
+                if (exp <= 1) {
+                    registrationFee = 500;
+                } else if (exp >= 2 && exp <= 3) {
+                    registrationFee = 250;
+                } else if (exp >= 4 && exp <= 5) {
+                    registrationFee = 100;
+                } else if (exp >= 6 && exp <= 9) {
+                    registrationFee = 50;
+                } else {
+                    registrationFee = 0;
+                }
+
+                //Now, save the speaker and sessions to the db.
+                try {
+                    speakerId = repository.saveSpeaker(this);
+                } catch (Exception e) {
+                    //in case the db call fails
+                }
+            } else {
+                throw new NoSessionsApprovedException("No sessions approved");
             }
         } else {
-            throw new ArgumentNullException("First Name is required");
+            throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our arbitrary and capricious standards");
         }
 
         //if we got this far, the speaker is registered.
         return speakerId;
+    }
+
+    private void validateData() throws ArgumentNullException {
+        if (Strings.isNullOrEmpty(firstName)) {
+            throw new ArgumentNullException("First Name is required");
+        }
+        if (Strings.isNullOrEmpty(lastName)) {
+            throw new ArgumentNullException("Last name is required");
+        }
+        if (Strings.isNullOrEmpty(email)) {
+            throw new ArgumentNullException("Email is required");
+        }
     }
 
     //region Custom Exceptions
