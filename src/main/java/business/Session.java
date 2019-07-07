@@ -4,9 +4,9 @@ package business;
 /// Represents a single conference session
 /// </summary>
 public class Session {
-    public String title;
-    public String description;
-    public boolean approved;
+    private String title;
+    private String description;
+    private boolean approved;
 
     public Session(String title, String description) {
         this.title = title;

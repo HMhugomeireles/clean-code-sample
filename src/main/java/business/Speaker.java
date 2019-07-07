@@ -102,27 +102,13 @@ public class Speaker {
             throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our arbitrary and capricious standards");
         }
 
-        boolean appr = false;
-        if (sessions.size() != 0) {
-            List<String> ot = Arrays.asList("Cobol", "Punch Cards", "Commodore", "VBScript");
-            for (Session session : sessions) {
-
-                for (String tech : ot) {
-
-                    if (session.title.contains(tech) || session.description.contains(tech)) {
-                        session.approved = false;
-                        break;
-                    } else {
-                        session.approved = true;
-                        appr = true;
-                    }
-                }
-            }
-        } else {
+        if (sessions.size() == 0) {
             throw new ArgumentNullException("Can't register speaker with no sessions to present");
         }
 
-        if (appr) {
+        boolean approved = this.anySessionsApproved();
+
+        if (approved) {
 
             //if we got this far, the speaker is approved
             //let's go ahead and register him/her now.
@@ -152,6 +138,20 @@ public class Speaker {
 
         //if we got this far, the speaker is registered.
         return speakerId;
+    }
+
+    private boolean anySessionsApproved() {
+        for (Session session : sessions) {
+            boolean sessionAboutOldTechnology = isSessionAboutOldTechnology(session);
+            session.setApproved(sessionAboutOldTechnology);
+        }
+
+        return sessions.stream().anyMatch(Session::isApproved);
+    }
+
+    private boolean isSessionAboutOldTechnology(Session session) {
+        List<String> oldTechnologies = Arrays.asList("Cobol", "Punch Cards", "Commodore", "VBScript");
+        return oldTechnologies.stream().anyMatch(tech -> session.getTitle().contains(tech) || session.getDescription().contains(tech));
     }
 
     private boolean hasRedFlags() {
