@@ -106,47 +106,47 @@ public class Speaker {
             throw new ArgumentNullException("Can't register speaker with no sessions to present");
         }
 
-        boolean approved = this.anySessionsApproved();
+        this.sessionsApproved();
 
-        if (approved) {
-
-            //if we got this far, the speaker is approved
-            //let's go ahead and register him/her now.
-            //First, let's calculate the registration fee.
-            //More experienced speakers pay a lower fee.
-            if (experienceYears <= 1) {
-                registrationFee = 500;
-            } else if (experienceYears >= 2 && experienceYears <= 3) {
-                registrationFee = 250;
-            } else if (experienceYears >= 4 && experienceYears <= 5) {
-                registrationFee = 100;
-            } else if (experienceYears >= 6 && experienceYears <= 9) {
-                registrationFee = 50;
-            } else {
-                registrationFee = 0;
-            }
-
-            //Now, save the speaker and sessions to the db.
-            try {
-                speakerId = repository.saveSpeaker(this);
-            } catch (Exception e) {
-                //in case the db call fails
-            }
+        //if we got this far, the speaker is approved
+        //let's go ahead and register him/her now.
+        //First, let's calculate the registration fee.
+        //More experienced speakers pay a lower fee.
+        if (experienceYears <= 1) {
+            registrationFee = 500;
+        } else if (experienceYears >= 2 && experienceYears <= 3) {
+            registrationFee = 250;
+        } else if (experienceYears >= 4 && experienceYears <= 5) {
+            registrationFee = 100;
+        } else if (experienceYears >= 6 && experienceYears <= 9) {
+            registrationFee = 50;
         } else {
-            throw new NoSessionsApprovedException("No sessions approved");
+            registrationFee = 0;
+        }
+
+        //Now, save the speaker and sessions to the db.
+        try {
+            speakerId = repository.saveSpeaker(this);
+        } catch (Exception e) {
+            //in case the db call fails
         }
 
         //if we got this far, the speaker is registered.
         return speakerId;
     }
 
-    private boolean anySessionsApproved() {
+    private void sessionsApproved() throws NoSessionsApprovedException {
         for (Session session : sessions) {
             boolean sessionAboutOldTechnology = isSessionAboutOldTechnology(session);
-            session.setApproved(sessionAboutOldTechnology);
+            session.setApproved(!sessionAboutOldTechnology);
         }
 
-        return sessions.stream().anyMatch(Session::isApproved);
+        boolean anySessionApproved = sessions.stream().anyMatch(Session::isApproved);
+
+        if (!anySessionApproved) {
+            throw new NoSessionsApprovedException("No sessions approved");
+        }
+
     }
 
     private boolean isSessionAboutOldTechnology(Session session) {
