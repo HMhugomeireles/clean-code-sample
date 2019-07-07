@@ -117,8 +117,7 @@ public class Speaker {
                         //need to get just the domain from the email
                         String emailDomain = email.split("@")[1];
 
-                        if (!domains.contains(emailDomain) && (!(browser.name == WebBrowser.BrowserName.InternetExplorer
-                            && browser.majorVersion < 9))) {
+                        if (!domains.contains(emailDomain) && (!(browser.name.equals("IE") && browser.majorVersion < 9))) {
                             good = true;
                         }
                     }
