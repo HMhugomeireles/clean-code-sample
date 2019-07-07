@@ -150,7 +150,7 @@ public class SpeakerTests {
         speaker.setHasBlog(true);
         speaker.setBrowser(new WebBrowser("test", 1));
 
-        speaker.setExp(1);
+        speaker.setExperienceYears(1);
         speaker.setCertifications(new ArrayList<>());
         speaker.setBlogURL("");
         speaker.setSessions(Collections.singletonList(new Session("test title", "test description")));

@@ -15,7 +15,7 @@ public class Speaker {
 
     private String email;
 
-    private int exp;
+    private int experienceYears;
 
     private boolean hasBlog;
 
@@ -48,8 +48,8 @@ public class Speaker {
         return this;
     }
 
-    public Speaker setExp(int exp) {
-        this.exp = exp;
+    public Speaker setExperienceYears(int experienceYears) {
+        this.experienceYears = experienceYears;
         return this;
     }
 
@@ -93,77 +93,95 @@ public class Speaker {
         //lets init some vars
         Integer speakerId = null;
 
-        validateData();
+        this.validateData();
 
-        List<String> preferredEmployers = Arrays.asList("Microsoft", "Google", "Fog Creek Software", "37Signals");
+        boolean appearsExceptional = this.appearsExceptional();
+        boolean hasRedFlags = this.hasRedFlags();
 
-        boolean speakerAppearsExceptional = ((exp > 10 || hasBlog || certifications.size() > 3 || preferredEmployers.contains(employer)));
-
-        if (!speakerAppearsExceptional) {
-            //need to get just the domain from the email
-            String emailDomain = email.split("@")[1];
-
-            List<String> domains = Arrays.asList("aol.com", "hotmail.com", "prodigy.com", "CompuServe.com");
-            if (!domains.contains(emailDomain) && (!(browser.name == WebBrowser.BrowserName.InternetExplorer
-                && browser.majorVersion < 9))) {
-                speakerAppearsExceptional = true;
-            }
+        if (!appearsExceptional || hasRedFlags) {
+            throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our arbitrary and capricious standards");
         }
 
-        if (speakerAppearsExceptional) {
-            boolean appr = false;
-            if (sessions.size() != 0) {
-                List<String> ot = Arrays.asList("Cobol", "Punch Cards", "Commodore", "VBScript");
-                for (Session session : sessions) {
+        boolean appr = false;
+        if (sessions.size() != 0) {
+            List<String> ot = Arrays.asList("Cobol", "Punch Cards", "Commodore", "VBScript");
+            for (Session session : sessions) {
 
-                    for (String tech : ot) {
+                for (String tech : ot) {
 
-                        if (session.title.contains(tech) || session.description.contains(tech)) {
-                            session.approved = false;
-                            break;
-                        } else {
-                            session.approved = true;
-                            appr = true;
-                        }
+                    if (session.title.contains(tech) || session.description.contains(tech)) {
+                        session.approved = false;
+                        break;
+                    } else {
+                        session.approved = true;
+                        appr = true;
                     }
                 }
-            } else {
-                throw new ArgumentNullException("Can't register speaker with no sessions to present");
-            }
-
-            if (appr) {
-
-                //if we got this far, the speaker is approved
-                //let's go ahead and register him/her now.
-                //First, let's calculate the registration fee.
-                //More experienced speakers pay a lower fee.
-                if (exp <= 1) {
-                    registrationFee = 500;
-                } else if (exp >= 2 && exp <= 3) {
-                    registrationFee = 250;
-                } else if (exp >= 4 && exp <= 5) {
-                    registrationFee = 100;
-                } else if (exp >= 6 && exp <= 9) {
-                    registrationFee = 50;
-                } else {
-                    registrationFee = 0;
-                }
-
-                //Now, save the speaker and sessions to the db.
-                try {
-                    speakerId = repository.saveSpeaker(this);
-                } catch (Exception e) {
-                    //in case the db call fails
-                }
-            } else {
-                throw new NoSessionsApprovedException("No sessions approved");
             }
         } else {
-            throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our arbitrary and capricious standards");
+            throw new ArgumentNullException("Can't register speaker with no sessions to present");
+        }
+
+        if (appr) {
+
+            //if we got this far, the speaker is approved
+            //let's go ahead and register him/her now.
+            //First, let's calculate the registration fee.
+            //More experienced speakers pay a lower fee.
+            if (experienceYears <= 1) {
+                registrationFee = 500;
+            } else if (experienceYears >= 2 && experienceYears <= 3) {
+                registrationFee = 250;
+            } else if (experienceYears >= 4 && experienceYears <= 5) {
+                registrationFee = 100;
+            } else if (experienceYears >= 6 && experienceYears <= 9) {
+                registrationFee = 50;
+            } else {
+                registrationFee = 0;
+            }
+
+            //Now, save the speaker and sessions to the db.
+            try {
+                speakerId = repository.saveSpeaker(this);
+            } catch (Exception e) {
+                //in case the db call fails
+            }
+        } else {
+            throw new NoSessionsApprovedException("No sessions approved");
         }
 
         //if we got this far, the speaker is registered.
         return speakerId;
+    }
+
+    private boolean hasRedFlags() {
+        //need to get just the domain from the email
+        String emailDomain = email.split("@")[1];
+
+        List<String> ancientDomains = Arrays.asList("aol.com", "hotmail.com", "prodigy.com", "CompuServe.com");
+        boolean isEmailDomainAncient = ancientDomains.contains(emailDomain);
+
+        boolean isBrowserOlderThanIe9 = browser.name == WebBrowser.BrowserName.InternetExplorer && browser.majorVersion < 9;
+
+        return isEmailDomainAncient || isBrowserOlderThanIe9;
+    }
+
+    private boolean appearsExceptional() {
+        if (experienceYears > 10) {
+            return true;
+        }
+
+        if (hasBlog) {
+            return true;
+        }
+
+        if (certifications.size() > 3) {
+            return true;
+        }
+
+        List<String> preferredEmployers = Arrays.asList("Microsoft", "Google", "Fog Creek Software", "37Signals");
+
+        return preferredEmployers.contains(employer);
     }
 
     private void validateData() throws ArgumentNullException {
